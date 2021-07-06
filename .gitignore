@@ -453,3 +453,4 @@ pip-selfcheck.json
 # Local History for Visual Studio Code
 
 /.env.db
+/.secrets.toml
