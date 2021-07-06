@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UNAME: $USER
+    container_name: rafa-care
+    restart: always
+    ports:
+      - 5000:5000
+    volumes:
+      - .:$HOME/app
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13.3
+    ports:
+      - 5432:5432
+    restart: always
+    volumes:
+      - /home/thcborges/projects/rafa-care/postgres_data:/var/lib/postgresql/data
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    env_file:
+      - .env.db
