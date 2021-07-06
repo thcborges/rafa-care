@@ -2,6 +2,7 @@
 DEBUG = false
 EXTENSIONS = [
     "rafa_care.ext.db:init_app",
+    "rafa_care.ext.migrate:init_app",
 ]
 SQLALCHEMY_TRACK_MODIFICATIONS = false
 JSON_AS_ASCII = false
