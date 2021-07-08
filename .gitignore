@@ -454,3 +454,4 @@ pip-selfcheck.json
 
 /.env.db
 /.secrets.toml
+/postgres_data/
