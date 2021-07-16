@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rafa-care"
-version = "0.1.0"
+version = "1.0.0"
 description = ""
 authors = ["Thiago da Cunha Borges <thiagoborges@id.uff.br>"]
 
@@ -11,6 +11,7 @@ Flask-SQLAlchemy = "^2.5.1"
 dynaconf = "^3.1.4"
 Flask-Migrate = "^3.0.1"
 psycopg2-binary = "^2.9.1"
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
