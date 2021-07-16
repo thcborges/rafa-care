@@ -29,11 +29,11 @@ def upgrade():
     )
     op.create_table('milk_sources',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('Description', sa.Unicode(length=50), nullable=False),
+    sa.Column('description', sa.Unicode(length=50), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('Description')
+    sa.UniqueConstraint('description')
     )
     op.create_table('breastfeeding',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),

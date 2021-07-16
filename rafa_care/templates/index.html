@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block css %}
+<!--<style>-->
+<!--    .scroll {-->
+<!--        overflow-x: auto;-->
+<!--        overflow-y: hidden;-->
+<!--        white-space: nowrap;-->
+<!--    }-->
+<!--</style>-->
+{% endblock css %}
+
+{% block content %}
+
+<form action="{{ url_for('site.new_breastfeeding') }}" method="post">
+    <button type="submit" class="btn btn-lg btn-primary">INICIAR MAMÁ</button>
+</form>
+<table class="table table-striped table-hover table-sm table-responsive mt-5 scroll">
+    <thead>
+        <tr>
+            <td>Origem do Leite</td>
+            <td>Inicio do Mamá</td>
+            <td>Final do Mamá</td>
+            <td>Duração</td>
+            <td>Observação</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for breastfeeding in breastfeedings %}
+        <tr onclick="window.location='{{ url_for('site.edit_breastfeeding', id_=breastfeeding.id) }}'">
+            <td>{{ breastfeeding.milk_source or "" }}</td>
+            <td>{{ breastfeeding.formatted_started_at }}</td>
+            <td>{{ breastfeeding.formatted_finished_at }}</td>
+            <td>{{ breastfeeding.duration }}</td>
+            <td>{{ breastfeeding.note or "" }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+
+{% endblock content %}
