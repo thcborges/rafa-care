@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Mamando</h2>
+<form action="{{ url_for('site.finish_breastfeeding') }}" method="post">
+    <input type="hidden" id="id" name="id" value="{{ breastfeeding.id }}">
+    <div class="col-auto mb-3">
+        <label for="started_at" class="form-label">Iniciado</label>
+        <input type="datetime-local" id="started_at" name="started_at"
+               class="form-control" required value="{{ breastfeeding.started_at.strftime('%Y-%m-%dT%H:%M') }}">
+    </div>
+    <div class="col-auto mb-3">
+        <label for="milk_sources" class="form-label col-2">
+            Origem do Leite
+        </label>
+        <select name="milk_sources" id="milk_sources" class="form-select col-10"
+                required>
+            {% for milk_source in milk_sources %}
+            <option value="{{ milk_source.id }}">
+                {{ milk_source.description }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto mb-3">
+        <label for="note" class="form-label">Observação</label>
+        <textarea name="note" id="note" cols="30" rows="3" class="form-control"></textarea>
+    </div>
+    <div class="col-auto mb-3">
+        <button type="submit" class="btn btn-primary">
+            ENCERRAR MAMÁ
+        </button>
+    </div>
+</form>
+<table class="table table-striped table-hover">
+
+</table>
+
+{% endblock content %}
