@@ -4,7 +4,10 @@ ARG UID=1000
 ARG GID=1000
 
 # Update repositories
-RUN apt update && apt upgrade -y && apt autoremove -y
+RUN apt update && \
+    apt upgrade -y && \
+    apt autoremove -y && \
+    apt install netcat -y
 ENV PIP_DEFAULT_TIMEOUT=100 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1
@@ -48,9 +51,11 @@ WORKDIR $HOME
 COPY --from=builder $HOME/app/dist/*.whl .
 RUN pip install *.whl && rm *.whl
 
-COPY settings.toml .secrets.toml ./
+COPY entrypoint.sh settings.toml .secrets.toml ./
+ADD migrations migrations
+ENV FLASK_APP=$HOME/.local/lib/python3.9/site-packages/rafa_care/app.py
 
 ENV PATH=$HOME/.local/bin:$PATH
 EXPOSE 5000
 
-CMD gunicorn --bind 0.0.0.0:5000 'rafa_care.app:create_app()'
+CMD bash $HOME/entrypoint.sh gunicorn --bind 0.0.0.0:5000 'rafa_care.app:create_app()'
