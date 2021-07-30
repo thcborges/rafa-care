@@ -1,5 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, session, \
-    url_for
+from flask import Blueprint, redirect, render_template, request, session, url_for
 
 from rafa_care.ext.dao import BreastfeedingDao, MilkSourceDao
 from rafa_care.ext.models import Breastfeeding
@@ -26,9 +25,9 @@ def new_breastfeeding():
             session.pop("breastfeeding_id")
 
     milk_sources = MilkSourceDao.get_all()
-    return render_template("breastfeeding.html",
-                           milk_sources=milk_sources,
-                           breastfeeding=breastfeeding)
+    return render_template(
+        "breastfeeding.html", milk_sources=milk_sources, breastfeeding=breastfeeding
+    )
 
 
 @bp.post("/encerra_mama")
@@ -41,7 +40,7 @@ def finish_breastfeeding():
     breastfeeding.finish(
         milk_source_id=data.get("milk_sources"),
         started_at=data.get("started_at"),
-        note=data.get("note")
+        note=data.get("note"),
     )
 
     session.pop("breastfeeding_id")
@@ -53,9 +52,11 @@ def finish_breastfeeding():
 def edit_breastfeeding(id_):
     milk_sources = MilkSourceDao.get_all()
     breastfeeding = BreastfeedingDao.get_by_id(id_)
-    return render_template("breastfeeding_edit.html",
-                           milk_sources=milk_sources,
-                           breastfeeding=breastfeeding)
+    return render_template(
+        "breastfeeding_edit.html",
+        milk_sources=milk_sources,
+        breastfeeding=breastfeeding,
+    )
 
 
 @bp.post("/atualiza_mama")
@@ -69,7 +70,7 @@ def update_breastfeeding():
         milk_source_id=data.get("milk_sources"),
         started_at=data.get("started_at"),
         finished_at=data.get("finished_at"),
-        note=data.get("note")
+        note=data.get("note"),
     )
 
     return redirect(url_for("site.home"))
