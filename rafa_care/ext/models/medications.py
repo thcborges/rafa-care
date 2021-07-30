@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from rafa_care.ext.db import db
 from rafa_care.ext.helpers.tz import convert_tz
-from rafa_care.ext.models import DiaperChange, MilkSource
+from rafa_care.ext.models import Medicine
 
 AMERICA_FORTALEZA_TIMEZONE = -3
 
@@ -26,7 +26,7 @@ class Medication(db.Model):
         onupdate=db.func.now(),
     )
 
-    medicine = db.relationship(MilkSource, backref="medicines")
+    medicine = db.relationship(Medicine, backref="medicines")
 
     @property
     def gave_at(self):
