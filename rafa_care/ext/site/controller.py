@@ -12,7 +12,7 @@ def home():
     return render_template("index.html", breastfeedings=breastfeedings)
 
 
-@bp.post("/mamando")
+@bp.get("/mamando")
 def new_breastfeeding():
     breastfeeding_id = session.get("breastfeeding_id")
     if not breastfeeding_id:
@@ -52,6 +52,7 @@ def finish_breastfeeding():
 def edit_breastfeeding(id_):
     milk_sources = MilkSourceDao.get_all()
     breastfeeding = BreastfeedingDao.get_by_id(id_)
+    session.pop("breastfeeding_id")
     return render_template(
         "breastfeeding_edit.html",
         milk_sources=milk_sources,
