@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, render_template, request, session, url_for
 
 from rafa_care.ext.dao import BreastfeedingDao, MilkSourceDao
+from rafa_care.ext.dao import MedicationDao
 from rafa_care.ext.models import Breastfeeding
 
 bp = Blueprint("site", __name__)
@@ -75,3 +76,9 @@ def update_breastfeeding():
     )
 
     return redirect(url_for("site.home"))
+
+
+@bp.get("/remedios")
+def medications():
+    medications = MedicationDao.get_all()
+    return render_template("medications.html", medications=medications)
