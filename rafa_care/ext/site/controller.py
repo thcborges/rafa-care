@@ -1,8 +1,10 @@
-from flask import Blueprint, redirect, render_template, request, session, url_for
+from flask import Blueprint, redirect, render_template, request, session, url_for, \
+    current_app
 
 from rafa_care.ext.dao import BreastfeedingDao, MilkSourceDao
 from rafa_care.ext.dao import MedicationDao
-from rafa_care.ext.models import Breastfeeding
+from rafa_care.ext.dao.medicine_dao import MedicineDao
+from rafa_care.ext.models import Breastfeeding, Medication
 
 bp = Blueprint("site", __name__)
 
@@ -79,6 +81,42 @@ def update_breastfeeding():
 
 
 @bp.get("/remedios")
-def medications():
+def medication_list():
     medications = MedicationDao.get_all()
     return render_template("medications.html", medications=medications)
+
+
+@bp.get("/dar_remedio")
+def give_medicine():
+    medicines = MedicineDao.get_all()
+    return render_template("medication_edit.html", medication=None, medicines=medicines)
+
+
+@bp.get("/atualiza_remedio/<int:medication_id>")
+def update_medication(medication_id):
+    medication = MedicationDao.get_by_id(medication_id)
+    medicines = MedicineDao.get_all()
+    return render_template(
+        "medication_edit.html",
+        medication=medication,
+        medicines=medicines
+    )
+
+
+@bp.post("/salva_remedio")
+def save_medication():
+    data = request.form
+    logger = current_app.logger
+    logger.info(data)
+    medication_id = data.get("id")
+    if medication_id:
+        medication = MedicationDao.get_by_id(medication_id)
+        logger.info(medication)
+    else:
+        medication = Medication()
+    medication.medicine_id = int(data.get("medicine"))
+    medication.gave_at = data.get("gave_at")
+    medication.note = data.get("note") or None
+    medication.save()
+
+    return redirect(url_for("site.medication_list"))

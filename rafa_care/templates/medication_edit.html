@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Hora do Remédio!</h2>
+<form action="{{ url_for('site.save_medication') }}" method="post">
+    <input type="hidden" id="id" name="id" value="{{ medication.id }}">
+    <div class="col-auto mb-3">
+        <label for="medicine" class="form-label col-2">
+            Remédio
+        </label>
+        <select name="medicine" id="medicine" class="form-select col-10" required>
+            {% if not medication.medicine %}
+                <option disabled value="" selected>-</option>
+            {% endif %}
+            {% for medicine in medicines %}
+            <option value="{{ medicine.id }}"
+                    {% if medication.medicine_id == medicine.id%}
+                        selected
+                    {% endif %}
+            >
+                {{ medicine.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto mb-3">
+        <label for="gave_at" class="form-label">Inicio</label>
+        <input type="datetime-local" id="gave_at" name="gave_at"
+               class="form-control" required value="{{ medication.input_gave_at }}">
+    </div>
+    <div class="col-auto mb-3">
+        <label for="note" class="form-label">Observação</label>
+        <textarea name="note" id="note" cols="30" rows="3" class="form-control">{{ medication.note or "" }}</textarea>
+    </div>
+    <div class="col-auto mb-3">
+        <button type="submit" class="btn btn-primary">
+            SALVAR
+        </button>
+    </div>
+</form>
+<table class="table table-striped table-hover">
+
+</table>
+<script>
+let gave_at_input = document.getElementById("gave_at");
+if (gave_at_input.value === "") {
+    let date = new Date();
+    date.setHours(date.getHours() - (date.getTimezoneOffset() / 60));
+    gave_at_input.value = date.toISOString().slice(0, 16);
+}
+</script>
+
+{% endblock content %}
