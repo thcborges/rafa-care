@@ -19,4 +19,5 @@ class Medicine(db.Model):
         db.session.commit()
 
     def __str__(self):
-        return self.name
+        dosage = self.dosage or ""
+        return f"{self.name} - {dosage}"
