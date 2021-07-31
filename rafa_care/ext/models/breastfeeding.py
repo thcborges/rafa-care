@@ -124,4 +124,4 @@ class Breastfeeding(db.Model):
         self.started_at = started_at
         self.finished_at = finished_at
         self.note = note
-        self.save()
+        db.session.commit()
