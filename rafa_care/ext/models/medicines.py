@@ -14,5 +14,9 @@ class Medicine(db.Model):
         onupdate=db.func.now(),
     )
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
     def __str__(self):
         return self.name
