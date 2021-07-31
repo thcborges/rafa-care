@@ -1,13 +1,13 @@
+import sqlalchemy.exc
 from flask import Blueprint, redirect, render_template, request, session, url_for, \
-    current_app
+    current_app, jsonify
 
 from rafa_care.ext.dao import BreastfeedingDao, MilkSourceDao
 from rafa_care.ext.dao import MedicationDao
 from rafa_care.ext.dao.medicine_dao import MedicineDao
-from rafa_care.ext.models import Breastfeeding, Medication
+from rafa_care.ext.models import Breastfeeding, Medication, Medicine
 
 bp = Blueprint("site", __name__)
-
 
 @bp.get("/")
 def home():
@@ -106,12 +106,9 @@ def update_medication(medication_id):
 @bp.post("/salva_remedio")
 def save_medication():
     data = request.form
-    logger = current_app.logger
-    logger.info(data)
     medication_id = data.get("id")
     if medication_id:
         medication = MedicationDao.get_by_id(medication_id)
-        logger.info(medication)
     else:
         medication = Medication()
     medication.medicine_id = int(data.get("medicine"))
@@ -120,3 +117,16 @@ def save_medication():
     medication.save()
 
     return redirect(url_for("site.medication_list"))
+
+
+@bp.post("/new_medicine")
+def new_medicine():
+    data = request.get_json(True)
+    medicine_name = data.get("name").upper()
+    try:
+        medicine = Medicine(name=medicine_name, dosage=data.get("dosage"))
+        medicine.save()
+    except sqlalchemy.exc.IntegrityError:
+        return jsonify({"error": "Medicine already exists"})
+
+    return jsonify({"medicine_id": medicine.id, "name": str(medicine)})
