@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block css %}
+<!--<style>-->
+<!--    .scroll {-->
+<!--        overflow-x: auto;-->
+<!--        overflow-y: hidden;-->
+<!--        white-space: nowrap;-->
+<!--    }-->
+<!--</style>-->
+{% endblock css %}
+
+{% block content %}
+
+<div>
+    <a href="{{ url_for('site.give_medicine') }}" class="btn btn-lg btn-primary">DAR REMÉDIO</a>
+</div>
+<table class="table table-striped table-hover table-sm table-responsive mt-5 scroll">
+    <thead>
+        <tr>
+            <td>Remédio</td>
+            <td>Hora</td>
+            <td>Observação</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for medication in medications %}
+        <tr onclick="window.location='{{ url_for("site.update_medication", medication_id=medication.id) }}'">
+            <td>{{ medication.medicine or "" }}</td>
+            <td>{{ medication.formatted_gave_at }}</td>
+            <td>{{ medication.note or "" }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+
+</table>
+
+{% endblock content %}
