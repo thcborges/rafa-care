@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Hora do Remédio!</h2>
+<div id="divError"></div>
+<form action="{{ url_for('site.save_medication') }}" method="post">
+    <input type="hidden" id="id" name="id" value="{{ medication.id }}">
+    <div class="col-auto mb-3">
+        <div class="d-flex justify-content-between ">
+            <label for="medicine" class="form-label col-2">
+                Remédio
+            </label>
+            <a href="" class="btn btn-success btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#newMedicineModal">NOVO REMÉDIO</a>
+        </div>
+        <select name="medicine" id="medicine" class="form-select col-10" required>
+            {% if not medication.medicine %}
+                <option disabled value="" selected>-</option>
+            {% endif %}
+            {% for medicine in medicines %}
+            <option value="{{ medicine.id }}"
+                    {% if medication.medicine_id == medicine.id%}
+                        selected
+                    {% endif %}
+            >
+                {{ medicine.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto mb-3">
+        <label for="gave_at" class="form-label">Hora</label>
+        <input type="datetime-local" id="gave_at" name="gave_at"
+               class="form-control" required value="{{ medication.input_gave_at }}">
+    </div>
+    <div class="col-auto mb-3">
+        <label for="note" class="form-label">Observação</label>
+        <textarea name="note" id="note" cols="30" rows="3" class="form-control">{{ medication.note or "" }}</textarea>
+    </div>
+    <div class="col-auto mb-3">
+        <button type="submit" class="btn btn-primary">
+            SALVAR
+        </button>
+    </div>
+</form>
+
+<!-- Modal -->
+<div class="modal fade" id="newMedicineModal" tabindex="-1" aria-labelledby="newMedicineModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Novo Remédio</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          <form action="">
+            <div class="col-auto mb-3">
+                <label for="medicineName" class="form-label">Nome</label>
+                <input type="text" id="medicineName" name="medicineName"
+                       class="form-control" required>
+            </div>
+            <div class="col-auto mb-3">
+                <label for="medicineDosage" class="form-label">Dosagem</label>
+                <input type="text" id="medicineDosage" name="medicineDosage"
+                       class="form-control" required>
+            </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="newMedicine()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let gave_at_input = document.getElementById("gave_at");
+if (gave_at_input.value === "") {
+    let date = new Date();
+    date.setHours(date.getHours() - (date.getTimezoneOffset() / 60));
+    gave_at_input.value = date.toISOString().slice(0, 16);
+}
+
+function closeAllModals() {
+
+    // get modals
+    const modals = document.getElementsByClassName('modal');
+
+    // on every modal change state like in hidden modal
+    for(let i=0; i<modals.length; i++) {
+      modals[i].classList.remove('show');
+      modals[i].setAttribute('aria-hidden', 'true');
+      modals[i].setAttribute('style', 'display: none');
+    }
+
+     // get modal backdrops
+     const modalsBackdrops = document.getElementsByClassName('modal-backdrop');
+
+     // remove every modal backdrop
+     for(let i=0; i<modalsBackdrops.length; i++) {
+       document.body.removeChild(modalsBackdrops[i]);
+     }
+  }
+
+function newMedicine(){
+    let new_medicine = {
+        name: document.getElementById("medicineName").value,
+        dosage: document.getElementById("medicineDosage").value
+    }
+    fetch("{{ url_for('site.new_medicine') }}", {
+        method: "POST",
+        body: JSON.stringify(new_medicine)
+    }).then((response) => {
+        return response.json()
+    }).then(function (data) {
+        console.log(data);
+        if (data.hasOwnProperty("medicine_id")) {
+            let option = document.createElement("option");
+            option.value = data.medicine_id;
+            option.text = data.name;
+            document.getElementById("medicine").appendChild(option);
+        } else {
+            document.getElementById("divError").innerHTML = '<div class="alert alert-danger d-flex" role="alert"> ' +
+            ' Remédio já existe ' +
+            '</div>';
+        }
+    })
+    .catch(error => {
+        console.log(error);
+    })
+    closeAllModals();
+}
+
+</script>
+
+{% endblock content %}

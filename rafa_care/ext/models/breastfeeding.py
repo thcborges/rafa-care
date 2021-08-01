@@ -10,31 +10,27 @@ AMERICA_FORTALEZA_TIMEZONE = -3
 class Breastfeeding(db.Model):
     __tablename__ = "breastfeeding"
     id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
-    milk_source_id = db.Column("milk_source_id",
-                               db.Integer,
-                               db.ForeignKey("milk_sources.id",
-                                             onupdate="CASCADE",
-                                             ondelete="SET NULL"),
-                               nullable=True)
-    diaper_change_id = db.Column("diaper_change_id",
-                                 db.Integer,
-                                 db.ForeignKey("diaper_changes.id",
-                                               onupdate="CASCADE",
-                                               ondelete="SET NULL"))
-    __started_at = db.Column("started_at",
-                           db.DateTime(),
-                           nullable=True)
-    __finished_at = db.Column("finished_at",
-                            db.DateTime(),
-                            nullable=True)
+    milk_source_id = db.Column(
+        "milk_source_id",
+        db.Integer,
+        db.ForeignKey("milk_sources.id", onupdate="CASCADE", ondelete="SET NULL"),
+        nullable=True,
+    )
+    diaper_change_id = db.Column(
+        "diaper_change_id",
+        db.Integer,
+        db.ForeignKey("diaper_changes.id", onupdate="CASCADE", ondelete="SET NULL"),
+    )
+    __started_at = db.Column("started_at", db.DateTime(), nullable=True)
+    __finished_at = db.Column("finished_at", db.DateTime(), nullable=True)
     note = db.Column("note", db.UnicodeText(), nullable=True)
-    created_at = db.Column("created_at",
-                           db.DateTime(),
-                           server_default=db.func.now())
-    updated_at = db.Column("updated_at",
-                           db.DateTime(),
-                           server_default=db.func.now(),
-                           onupdate=db.func.now())
+    created_at = db.Column("created_at", db.DateTime(), server_default=db.func.now())
+    updated_at = db.Column(
+        "updated_at",
+        db.DateTime(),
+        server_default=db.func.now(),
+        onupdate=db.func.now(),
+    )
 
     milk_source = db.relationship(MilkSource, backref="breastfeeding")
     diaper_change = db.relationship(DiaperChange, backref="breastfeeding")
@@ -47,22 +43,20 @@ class Breastfeeding(db.Model):
     def input_started_at(self) -> str:
         if not self.__started_at:
             return ""
-        return self.started_at.strftime('%Y-%m-%dT%H:%M')
+        return self.started_at.strftime("%Y-%m-%dT%H:%M")
 
     @property
     def formatted_started_at(self) -> str:
         if not self.__started_at:
             return ""
-        return self.started_at.strftime('%d/%m/%Y %H:%M')
+        return self.started_at.strftime("%d/%m/%Y %H:%M")
 
     @started_at.setter
     def started_at(self, value):
         if isinstance(value, str):
-            self.__started_at = (
-                datetime.fromisoformat(
-                    f"{value}{AMERICA_FORTALEZA_TIMEZONE:+03d}:00"
-                ).astimezone(timezone.utc)
-            )
+            self.__started_at = datetime.fromisoformat(
+                f"{value}{AMERICA_FORTALEZA_TIMEZONE:+03d}:00"
+            ).astimezone(timezone.utc)
         elif isinstance(value, datetime):
             self.__started_at = value.astimezone(timezone.utc)
 
@@ -74,22 +68,20 @@ class Breastfeeding(db.Model):
     def input_finished_at(self) -> str:
         if not self.__finished_at:
             return ""
-        return self.finished_at.strftime('%Y-%m-%dT%H:%M')
+        return self.finished_at.strftime("%Y-%m-%dT%H:%M")
 
     @property
     def formatted_finished_at(self) -> str:
         if not self.__finished_at:
             return ""
-        return self.finished_at.strftime('%d/%m/%Y %H:%M')
+        return self.finished_at.strftime("%d/%m/%Y %H:%M")
 
     @finished_at.setter
     def finished_at(self, value):
         if isinstance(value, str):
-            self.__finished_at = (
-                datetime.fromisoformat(
-                    f"{value}{AMERICA_FORTALEZA_TIMEZONE:+03d}:00"
-                ).astimezone(timezone.utc)
-            )
+            self.__finished_at = datetime.fromisoformat(
+                f"{value}{AMERICA_FORTALEZA_TIMEZONE:+03d}:00"
+            ).astimezone(timezone.utc)
         elif isinstance(value, datetime):
             self.__finished_at = value.astimezone(timezone.utc)
 
@@ -124,4 +116,4 @@ class Breastfeeding(db.Model):
         self.started_at = started_at
         self.finished_at = finished_at
         self.note = note
-        self.save()
+        db.session.commit()
