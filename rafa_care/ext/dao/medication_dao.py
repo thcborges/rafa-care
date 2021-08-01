@@ -9,6 +9,4 @@ class MedicationDao:
 
     @staticmethod
     def get_all():
-        return (
-            db.session.query(Medication).order_by(db.text("gave_at DESC")).all()
-        )
+        return db.session.query(Medication).order_by(db.text("gave_at DESC")).all()
