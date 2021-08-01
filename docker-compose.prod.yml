@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile.prod
       args:
         UNAME: $USER
-    container_name: rafa-care
+    image: thcborges/rafa-care
     restart: always
     ports:
       - 5001:5000
