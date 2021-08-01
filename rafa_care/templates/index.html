@@ -28,7 +28,7 @@
     </thead>
     <tbody>
     {% for breastfeeding in breastfeedings %}
-        <tr onclick="window.location='{{ url_for('site.edit_breastfeeding', id_=breastfeeding.id) }}'">
+        <tr onclick="window.location='{{ url_for("site.edit_breastfeeding", id_=breastfeeding.id) }}'">
             <td>{{ breastfeeding.milk_source or "" }}</td>
             <td>{{ breastfeeding.formatted_started_at }}</td>
             <td>{{ breastfeeding.formatted_finished_at }}</td>
