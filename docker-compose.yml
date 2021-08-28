@@ -22,8 +22,22 @@ services:
       - 5432:5432
     restart: always
     volumes:
-      - /home/thcborges/projects/rafa-care/postgres_data:/var/lib/postgresql/data
+      - ./postgres_data:/var/lib/postgresql/data
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
     env_file:
       - .env.db
+
+  front:
+    build:
+      context: ./front
+      args:
+        UNAME: $USER
+    container_name: rafa-care_front
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front/rafa-care-front:$HOME/app
+    depends_on:
+      - app
